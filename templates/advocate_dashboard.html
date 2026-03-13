@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Legal Case System{% endblock %}
+
+{% block content %}
+<div class="trad-header">
+    <h1><i class="fas fa-balance-scale"></i> Legal Case System</h1>
+    <div class="subtitle">Advocate Portal | Welcome, {{ session['user_name'] }}</div>
+</div>
+
+<div class="trad-sidebar">
+    <div class="trad-sidebar-header">
+        <i class="fas fa-gavel"></i>
+        <h4>Advocate Panel</h4>
+    </div>
+    
+    <div class="trad-sidebar-menu">
+        <a href="{{ url_for('advocate_dashboard') }}" class="active">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{{ url_for('advocate_cases') }}">
+            <i class="fas fa-briefcase"></i> Cases
+        </a>
+        <a href="{{ url_for('advocate_clients') }}">
+            <i class="fas fa-users"></i> Clients
+        </a>
+        <a href="{{ url_for('advocate_create_client') }}">
+            <i class="fas fa-user-plus"></i> Create Client
+        </a>
+        <a href="{{ url_for('advocate_messages') }}">
+            <i class="fas fa-comments"></i> Messages
+            {% if unread_messages > 0 %}
+            <span style="float:right; background:var(--dark-gold); padding:2px 8px; border-radius:10px; font-size:0.75rem;">{{ unread_messages }}</span>
+            {% endif %}
+        </a>
+        <a href="{{ url_for('advocate_documents') }}">
+            <i class="fas fa-folder"></i> Documents
+        </a>
+        <a href="{{ url_for('ai_assistant') }}">
+            <i class="fas fa-robot"></i> AI Assistant
+        </a>
+    </div>
+    
+    <div class="trad-sidebar-user">
+        <div class="user-name">
+            <i class="fas fa-user-circle me-2"></i>{{ session['user_name'] }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-trad-outline w-100 mt-2" style="font-size:0.8rem;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="trad-main">
+    <div class="trad-page-header">
+        <h2><i class="fas fa-tachometer-alt me-2"></i>Advocate Dashboard</h2>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="trad-stat-box">
+                <div class="number">{{ total_cases }}</div>
+                <div class="label">Total Cases</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="trad-stat-box">
+                <div class="number">{{ upcoming_hirings|length }}</div>
+                <div class="label">Upcoming Hirings</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="trad-stat-box">
+                <div class="number">{{ unread_messages }}</div>
+                <div class="label">Unread Messages</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="trad-stat-box">
+                <div class="number">{{ clients|length }}</div>
+                <div class="label">Total Clients</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="trad-card">
+                <div class="trad-card-header">
+                    <h4><i class="fas fa-calendar-alt me-2"></i>Upcoming Hiring Dates</h4>
+                </div>
+                <div class="trad-card-body">
+                    {% if upcoming_hirings %}
+                    <table class="trad-table">
+                        <thead>
+                            <tr>
+                                <th>Case No.</th>
+                                <th>Client</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for case in upcoming_hirings %}
+                            <tr>
+                                <td>{{ case.case_number }}</td>
+                                <td>{{ case.client_name }}</td>
+                                <td>{{ case.hiring_date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>No upcoming hirings</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="trad-card">
+                <div class="trad-card-header">
+                    <h4><i class="fas fa-envelope me-2"></i>Recent Messages</h4>
+                </div>
+                <div class="trad-card-body">
+                    {% if recent_messages %}
+                    {% for message in recent_messages %}
+                    <div class="trad-message">
+                        <strong>{{ message.client_name }}</strong>
+                        <p style="margin:5px 0 0; font-size:0.9rem; color:var(--charcoal);">{{ message.message_text[:60] }}...</p>
+                        <small style="color:var(--secondary-brown);">{{ message.created_at }}</small>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No messages</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="trad-card">
+        <div class="trad-card-header">
+            <h4><i class="fas fa-bell me-2"></i>Notifications</h4>
+        </div>
+        <div class="trad-card-body">
+            {% if notifications %}
+            {% for notif in notifications %}
+            <div class="trad-notification">
+                <strong>{{ notif.title }}</strong>
+                <p style="margin:5px 0 0; font-size:0.9rem;">{{ notif.message }}</p>
+                <small style="color:var(--secondary-brown);">{{ notif.created_at }}</small>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-bell-slash"></i>
+                <p>No notifications</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="trad-footer">
+        <small>&copy; 2024 Legal Case System | All Rights Reserved</small>
+    </div>
+</div>
+{% endblock %}

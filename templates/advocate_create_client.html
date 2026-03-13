@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Create Client - Legal Case System{% endblock %}
+
+{% block content %}
+<div class="trad-header">
+    <h1><i class="fas fa-balance-scale"></i> Legal Case System</h1>
+    <div class="subtitle">Advocate Portal | {{ session['user_name'] }}</div>
+</div>
+
+<div class="trad-sidebar">
+    <div class="trad-sidebar-header">
+        <i class="fas fa-gavel"></i>
+        <h4>Advocate Panel</h4>
+    </div>
+    
+    <div class="trad-sidebar-menu">
+        <a href="{{ url_for('advocate_dashboard') }}">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{{ url_for('advocate_cases') }}">
+            <i class="fas fa-briefcase"></i> Cases
+        </a>
+        <a href="{{ url_for('advocate_clients') }}">
+            <i class="fas fa-users"></i> Clients
+        </a>
+        <a href="{{ url_for('advocate_messages') }}">
+            <i class="fas fa-comments"></i> Messages
+        </a>
+        <a href="{{ url_for('advocate_documents') }}">
+            <i class="fas fa-folder"></i> Documents
+        </a>
+        <a href="{{ url_for('ai_assistant') }}">
+            <i class="fas fa-robot"></i> AI Assistant
+        </a>
+    </div>
+    
+    <div class="trad-sidebar-user">
+        <div class="user-name">
+            <i class="fas fa-user-circle me-2"></i>{{ session['user_name'] }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-trad-outline w-100 mt-2" style="font-size:0.8rem;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="trad-main">
+    <div class="trad-page-header">
+        <h2><i class="fas fa-user-plus me-2"></i>Create New Client</h2>
+    </div>
+    
+    {% if success %}
+    <div class="trad-card">
+        <div class="trad-card-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+            <h4><i class="fas fa-check-circle me-2"></i>Client Created Successfully</h4>
+        </div>
+        <div class="trad-card-body">
+            <div class="alert alert-success">
+                <h5>Client Details:</h5>
+                <p><strong>Name:</strong> {{ client_name }}</p>
+                <p><strong>Client ID:</strong> {{ client_id }}</p>
+                <p><strong>Password:</strong> {{ password }}</p>
+                <p><small class="text-muted">Please share these credentials securely with the client.</small></p>
+            </div>
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('advocate_create_client') }}" class="btn btn-trad-outline">
+                    <i class="fas fa-user-plus me-2"></i> Create Another Client
+                </a>
+                <a href="{{ url_for('advocate_clients') }}" class="btn btn-trad">
+                    <i class="fas fa-users me-2"></i> View All Clients
+                </a>
+            </div>
+        </div>
+    </div>
+    {% elif error %}
+    <div class="trad-card">
+        <div class="trad-card-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+            <h4><i class="fas fa-exclamation-triangle me-2"></i>Error</h4>
+        </div>
+        <div class="trad-card-body">
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            <a href="{{ url_for('advocate_create_client') }}" class="btn btn-trad">
+                <i class="fas fa-user-plus me-2"></i> Try Again
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="trad-card">
+        <div class="trad-card-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+            <h4><i class="fas fa-user-plus me-2"></i>Create New Client Account</h4>
+        </div>
+        <div class="trad-card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="trad-label">Full Name</label>
+                        <input type="text" class="form-control trad-form-control" name="name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="trad-label">Email</label>
+                        <input type="email" class="form-control trad-form-control" name="email" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="trad-label">Phone Number</label>
+                        <input type="tel" class="form-control trad-form-control" name="phone">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="trad-label">Address</label>
+                        <textarea class="form-control trad-form-control" name="address" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="trad-label">Aadhar Number</label>
+                        <input type="text" class="form-control trad-form-control" name="aadhar_number" placeholder="12-digit Aadhar number">
+                        <small class="form-text text-muted">Enter the client's 12-digit Aadhar number</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="trad-label">Profile Image (Optional)</label>
+                        <input type="file" class="form-control trad-form-control" name="profile_image" accept=".png,.jpg,.jpeg,.gif">
+                        <small class="form-text text-muted">Allowed formats: PNG, JPG, JPEG, GIF (Max 5MB)</small>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="trad-label">Password</label>
+                        <input type="password" class="form-control trad-form-control" name="password" required>
+                        <small class="form-text text-muted">This will be the client's login password</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="trad-label">Confirm Password</label>
+                        <input type="password" class="form-control trad-form-control" name="confirm_password" required>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-trad">
+                        <i class="fas fa-save me-2"></i> Create Client Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="trad-footer">
+        <small>&copy; 2024 Legal Case System | All Rights Reserved</small>
+    </div>
+</div>
+{% endblock %}

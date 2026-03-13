@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Legal Case System{% endblock %}
+
+{% block content %}
+<div class="trad-login-page">
+    <div class="trad-login-box" style="max-width:500px;">
+        <div class="trad-login-header">
+            <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+            <p style="margin:0; opacity:0.9;">Legal Case System</p>
+        </div>
+        
+        <div class="trad-login-body">
+            {% if error %}
+            <div class="alert alert-danger" style="background:#f8d7da; border-color:#f5c6cb; color:#721c24;">
+                {{ error }}
+            </div>
+            {% endif %}
+            
+            <form method="POST" action="{{ url_for('register') }}">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="user-type-box active" onclick="selectUserType('advocate', this)">
+                            <i class="fas fa-gavel d-block"></i>
+                            <small>Advocate</small>
+                            <input type="radio" name="user_type" value="advocate" checked style="display:none;">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="user-type-box" onclick="selectUserType('client', this)">
+                            <i class="fas fa-user d-block"></i>
+                            <small>Client</small>
+                            <input type="radio" name="user_type" value="client" style="display:none;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="trad-label">Full Name</label>
+                    <input type="text" class="form-control trad-form-control" name="name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="trad-label">Email Address</label>
+                    <input type="email" class="form-control trad-form-control" name="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="trad-label">Phone Number</label>
+                    <input type="tel" class="form-control trad-form-control" name="phone" placeholder="Enter your phone number" required>
+                </div>
+                
+                <div id="advocate-fields">
+                    <div class="mb-3">
+                        <label class="trad-label">Bar Registration Number</label>
+                        <input type="text" class="form-control trad-form-control" name="bar_registration" placeholder="Enter bar registration number">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="trad-label">Specialization</label>
+                        <select class="form-control trad-form-control" name="specialization">
+                            <option value="">Select specialization</option>
+                            <option value="Criminal Law">Criminal Law</option>
+                            <option value="Civil Law">Civil Law</option>
+                            <option value="Corporate Law">Corporate Law</option>
+                            <option value="Family Law">Family Law</option>
+                            <option value="Property Law">Property Law</option>
+                            <option value="Intellectual Property">Intellectual Property</option>
+                            <option value="Tax Law">Tax Law</option>
+                            <option value="Constitutional Law">Constitutional Law</option>
+                            <option value="General Practice">General Practice</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="client-fields" style="display:none;">
+                    <div class="mb-3">
+                        <label class="trad-label">Address</label>
+                        <textarea class="form-control trad-form-control" name="address" placeholder="Enter your address" rows="2"></textarea>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="trad-label">Password</label>
+                    <input type="password" class="form-control trad-form-control" name="password" placeholder="Create a password" required>
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-trad">
+                        <i class="fas fa-user-plus me-2"></i> Register
+                    </button>
+                </div>
+            </form>
+            
+            <div class="text-center mt-4" style="border-top:1px solid #d4c4b0; padding-top:15px;">
+                <p style="font-size:0.9rem;">Already have an account? 
+                    <a href="{{ url_for('login') }}" style="color:var(--primary-brown);">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const advocateFields = document.getElementById('advocate-fields');
+    const clientFields = document.getElementById('client-fields');
+    
+    function selectUserType(type, element) {
+        document.querySelectorAll('.user-type-box').forEach(box => box.classList.remove('active'));
+        element.classList.add('active');
+        element.querySelector('input').checked = true;
+        
+        if (type === 'advocate') {
+            advocateFields.style.display = 'block';
+            clientFields.style.display = 'none';
+        } else {
+            advocateFields.style.display = 'none';
+            clientFields.style.display = 'block';
+        }
+    }
+</script>
+{% endblock %}

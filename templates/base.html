@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Legal Case System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-brown: #4a3728;
+            --secondary-brown: #6d4c41;
+            --cream: #f5f0e8;
+            --dark-gold: #8b7355;
+            --pure-black: #1a1a1a;
+            --charcoal: #333333;
+            --white: #ffffff;
+            --light-cream: #faf8f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background-color: var(--cream);
+            color: var(--charcoal);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Georgia', serif;
+            font-weight: 600;
+        }
+
+        /* Traditional Header */
+        .trad-header {
+            background: linear-gradient(180deg, var(--primary-brown) 0%, var(--secondary-brown) 100%);
+            padding: 20px 0;
+            border-bottom: 4px solid var(--dark-gold);
+        }
+
+        .trad-header h1 {
+            color: var(--white);
+            font-size: 2rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .trad-header .subtitle {
+            color: var(--cream);
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Traditional Sidebar */
+        .trad-sidebar {
+            background: var(--primary-brown);
+            min-height: 100vh;
+            padding: 0;
+            position: fixed;
+            width: 240px;
+            left: 0;
+            top: 0;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.3);
+        }
+
+        .trad-sidebar-header {
+            padding: 20px 15px;
+            border-bottom: 2px solid var(--dark-gold);
+            text-align: center;
+        }
+
+        .trad-sidebar-header h4 {
+            color: var(--cream);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .trad-sidebar-header i {
+            color: var(--dark-gold);
+            font-size: 1.5rem;
+        }
+
+        .trad-sidebar-menu {
+            padding: 15px 0;
+        }
+
+        .trad-sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--cream);
+            text-decoration: none;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .trad-sidebar-menu a:hover,
+        .trad-sidebar-menu a.active {
+            background: var(--secondary-brown);
+            border-left-color: var(--dark-gold);
+            color: var(--white);
+        }
+
+        .trad-sidebar-menu a i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .trad-sidebar-user {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 15px;
+            background: var(--secondary-brown);
+            border-top: 2px solid var(--dark-gold);
+        }
+
+        .trad-sidebar-user .user-name {
+            color: var(--cream);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Traditional Main Content */
+        .trad-main {
+            margin-left: 240px;
+            padding: 25px;
+            min-height: 100vh;
+        }
+
+        /* Traditional Card */
+        .trad-card {
+            background: var(--white);
+            border: 1px solid #d4c4b0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .trad-card-header {
+            background: linear-gradient(180deg, var(--primary-brown) 0%, var(--secondary-brown) 100%);
+            color: var(--white);
+            padding: 12px 20px;
+            border-bottom: 2px solid var(--dark-gold);
+        }
+
+        .trad-card-header h4 {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .trad-card-body {
+            padding: 20px;
+        }
+
+        /* Traditional Buttons */
+        .btn-trad {
+            background: var(--primary-brown);
+            color: var(--white);
+            border: 1px solid var(--secondary-brown);
+            padding: 8px 20px;
+            border-radius: 3px;
+            font-family: 'Georgia', serif;
+            transition: all 0.3s;
+        }
+
+        .btn-trad:hover {
+            background: var(--secondary-brown);
+            color: var(--white);
+        }
+
+        .btn-trad-outline {
+            background: transparent;
+            color: var(--primary-brown);
+            border: 2px solid var(--primary-brown);
+            padding: 8px 20px;
+            border-radius: 3px;
+            font-family: 'Georgia', serif;
+        }
+
+        .btn-trad-outline:hover {
+            background: var(--primary-brown);
+            color: var(--white);
+        }
+
+        /* Traditional Form */
+        .trad-form-control {
+            border: 1px solid #c4b49e;
+            border-radius: 3px;
+            padding: 10px 15px;
+            font-family: 'Georgia', serif;
+        }
+
+        .trad-form-control:focus {
+            border-color: var(--primary-brown);
+            box-shadow: none;
+        }
+
+        .trad-label {
+            color: var(--primary-brown);
+            font-weight: 600;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Traditional Table */
+        .trad-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .trad-table thead th {
+            background: var(--cream);
+            color: var(--primary-brown);
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--primary-brown);
+            font-family: 'Georgia', serif;
+            font-weight: 600;
+        }
+
+        .trad-table tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #e0d8c8;
+        }
+
+        .trad-table tbody tr:hover {
+            background: var(--light-cream);
+        }
+
+        /* Status Badges */
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .status-won {
+            background: #d4edda;
+            color: #155724;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .status-lost {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .status-active {
+            background: #cce5ff;
+            color: #004085;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        /* Login Page */
+        .trad-login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--cream);
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23f5f0e8"/><path d="M0 0h100v1H0z\" fill="%23e8e0d4"/></svg>');
+        }
+
+        .trad-login-box {
+            background: var(--white);
+            border: 2px solid var(--primary-brown);
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.2);
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .trad-login-header {
+            background: linear-gradient(180deg, var(--primary-brown) 0%, var(--secondary-brown) 100%);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--dark-gold);
+        }
+
+        .trad-login-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .trad-login-body {
+            padding: 30px;
+        }
+
+        /* Stats */
+        .trad-stat-box {
+            background: var(--white);
+            border: 1px solid #d4c4b0;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .trad-stat-box .number {
+            font-size: 2rem;
+            color: var(--primary-brown);
+            font-weight: bold;
+        }
+
+        .trad-stat-box .label {
+            color: var(--charcoal);
+            font-size: 0.9rem;
+        }
+
+        /* Messages */
+        .trad-message {
+            border-bottom: 1px solid #e0d8c8;
+            padding: 15px;
+        }
+
+        .trad-message:hover {
+            background: var(--light-cream);
+        }
+
+        /* Notifications */
+        .trad-notification {
+            border-bottom: 1px solid #e0d8c8;
+            padding: 15px;
+        }
+
+        .trad-notification:hover {
+            background: var(--light-cream);
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .trad-sidebar {
+                transform: translateX(-100%);
+            }
+            .trad-main {
+                margin-left: 0;
+            }
+        }
+
+        /* Chat */
+        .trad-chat-container {
+            border: 1px solid #d4c4b0;
+            background: var(--light-cream);
+            padding: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .trad-chat-message {
+            margin-bottom: 15px;
+        }
+
+        .trad-chat-bubble {
+            padding: 10px 15px;
+            border-radius: 5px;
+            max-width: 70%;
+        }
+
+        .trad-chat-sent {
+            text-align: right;
+        }
+
+        .trad-chat-sent .trad-chat-bubble {
+            background: var(--primary-brown);
+            color: var(--white);
+            margin-left: auto;
+        }
+
+        .trad-chat-received .trad-chat-bubble {
+            background: var(--white);
+            border: 1px solid #d4c4b0;
+        }
+
+        /* Documents */
+        .trad-doc-card {
+            border: 1px solid #d4c4b0;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: var(--white);
+        }
+
+        .trad-doc-card:hover {
+            background: var(--light-cream);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--charcoal);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #c4b49e;
+            margin-bottom: 15px;
+        }
+
+        /* User type selector */
+        .user-type-box {
+            border: 2px solid #d4c4b0;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .user-type-box.active {
+            border-color: var(--primary-brown);
+            background: var(--cream);
+        }
+
+        .user-type-box i {
+            font-size: 1.5rem;
+            color: var(--primary-brown);
+            margin-bottom: 5px;
+        }
+
+        /* Page Header */
+        .trad-page-header {
+            background: var(--white);
+            border: 1px solid #d4c4b0;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .trad-page-header h2 {
+            color: var(--primary-brown);
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        /* Footer */
+        .trad-footer {
+            background: var(--primary-brown);
+            color: var(--cream);
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+            border-top: 3px solid var(--dark-gold);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

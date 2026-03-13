@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Messages - Legal Case System{% endblock %}
+
+{% block content %}
+<div class="trad-header">
+    <h1><i class="fas fa-balance-scale"></i> Legal Case System</h1>
+    <div class="subtitle">Advocate Portal | {{ session['user_name'] }}</div>
+</div>
+
+<div class="trad-sidebar">
+    <div class="trad-sidebar-header">
+        <i class="fas fa-gavel"></i>
+        <h4>Advocate Panel</h4>
+    </div>
+    
+    <div class="trad-sidebar-menu">
+        <a href="{{ url_for('advocate_dashboard') }}">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{{ url_for('advocate_cases') }}">
+            <i class="fas fa-briefcase"></i> Cases
+        </a>
+        <a href="{{ url_for('advocate_clients') }}">
+            <i class="fas fa-users"></i> Clients
+        </a>
+        <a href="{{ url_for('advocate_messages') }}" class="active">
+            <i class="fas fa-comments"></i> Messages
+        </a>
+        <a href="{{ url_for('advocate_documents') }}">
+            <i class="fas fa-folder"></i> Documents
+        </a>
+        <a href="{{ url_for('ai_assistant') }}">
+            <i class="fas fa-robot"></i> AI Assistant
+        </a>
+    </div>
+    
+    <div class="trad-sidebar-user">
+        <div class="user-name">
+            <i class="fas fa-user-circle me-2"></i>{{ session['user_name'] }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-trad-outline w-100 mt-2" style="font-size:0.8rem;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="trad-main">
+    <div class="trad-page-header">
+        <h2><i class="fas fa-comments me-2"></i>Messages</h2>
+    </div>
+    
+    <div class="trad-card">
+        <div class="trad-card-header">
+            <h4><i class="fas fa-paper-plane me-2"></i>Send New Message</h4>
+        </div>
+        <div class="trad-card-body">
+             <form method="POST" enctype="multipart/form-data">
+                 <div class="row">
+                     <div class="col-md-4">
+                         <div class="mb-3">
+                             <label class="trad-label">Select Client</label>
+                             <select class="form-control trad-form-control" name="receiver_id" required>
+                                 <option value="">Choose client...</option>
+                                 {% for client in clients %}
+                                 <option value="{{ client.id }}">{{ client.name }}</option>
+                                 {% endfor %}
+                             </select>
+                         </div>
+                     </div>
+                     <div class="col-md-4">
+                         <div class="mb-3">
+                             <label class="trad-label">Related Case</label>
+                             <select class="form-control trad-form-control" name="case_id">
+                                 <option value="">No specific case</option>
+                                 {% for case in cases %}
+                                 <option value="{{ case.id }}">{{ case.case_number }}</option>
+                                 {% endfor %}
+                             </select>
+                         </div>
+                     </div>
+                     <div class="col-md-4">
+                         <div class="mb-3">
+                             <label class="trad-label">Attachment (Image/PDF)</label>
+                             <input type="file" class="form-control trad-form-control" name="file" accept=".png,.jpg,.jpeg,.gif,.pdf">
+                             <small class="form-text text-muted">Allowed formats: PNG, JPG, JPEG, GIF, PDF (Max 16MB)</small>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="mb-3">
+                     <label class="trad-label">Message</label>
+                     <textarea class="form-control trad-form-control" name="message_text" rows="2" placeholder="Type your message..."></textarea>
+                 </div>
+                 <div class="d-grid">
+                     <button type="submit" class="btn btn-trad">
+                         <i class="fas fa-paper-plane"></i> Send Message
+                     </button>
+                 </div>
+             </form>
+        </div>
+    </div>
+    
+    <div class="trad-card">
+        <div class="trad-card-header">
+            <h4><i class="fas fa-inbox me-2"></i>All Messages</h4>
+        </div>
+        <div class="trad-card-body">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="trad-message">
+                <strong>
+                    {% if message.sender_type == 'client' %}{{ message.client_name }}{% else %}You → {{ message.client_name }}{% endif %}
+                </strong>
+                <p style="margin:5px 0;">{{ message.message_text }}</p>
+                <small style="color:var(--secondary-brown);">{{ message.created_at }}</small>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No messages</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="trad-footer">
+        <small>&copy; 2024 Legal Case System | All Rights Reserved</small>
+    </div>
+</div>
+{% endblock %}

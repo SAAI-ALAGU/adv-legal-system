@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Legal Case System{% endblock %}
+
+{% block content %}
+<style>
+    .client-sidebar { background: var(--primary-brown) !important; }
+</style>
+
+<div class="trad-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+    <h1><i class="fas fa-briefcase"></i> Legal Case System</h1>
+    <div class="subtitle">Client Portal | Welcome, {{ session['user_name'] }}</div>
+</div>
+
+<div class="trad-sidebar client-sidebar">
+    <div class="trad-sidebar-header">
+        <i class="fas fa-user-tie"></i>
+        <h4>Client Panel</h4>
+    </div>
+    
+    <div class="trad-sidebar-menu">
+        <a href="{{ url_for('client_dashboard') }}" class="active">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{{ url_for('client_messages') }}">
+            <i class="fas fa-comments"></i> Messages
+        </a>
+    </div>
+    
+    <div class="trad-sidebar-user">
+        <div class="user-name">
+            <i class="fas fa-user-circle me-2"></i>{{ session['user_name'] }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-trad-outline w-100 mt-2" style="font-size:0.8rem;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="trad-main">
+    <div class="trad-page-header">
+        <h2><i class="fas fa-user-circle me-2"></i>Welcome, {{ session['user_name'] }}</h2>
+    </div>
+    
+    <!-- Client Profile Section -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="trad-card">
+                <div class="trad-card-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+                    <h4><i class="fas fa-user me-2"></i>My Profile</h4>
+                </div>
+                <div class="trad-card-body text-center">
+                    {% if client.profile_image %}
+                    <img src="{{ url_for('static', filename='uploads/clients/' + client.id|string + '/' + client.profile_image) }}" 
+                         class="rounded-circle profile-img" width="100" height="100" alt="Profile">
+                    {% else %}
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" 
+                         style="width:100px; height:100px; margin:0 auto;">
+                        <i class="fas fa-user fa-2x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <h5 class="mt-3">{{ client.name }}</h5>
+                    <p class="text-muted">{{ client.email }}</p>
+                    <small>{{ client.phone }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="trad-card">
+                <div class="trad-card-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+                    <h4><i class="fas fa-edit me-2"></i>Update Profile</h4>
+                </div>
+                <div class="trad-card-body">
+                    <form method="POST" action="{{ url_for('update_client_profile') }}" enctype="multipart/form-data">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="trad-label">Full Name</label>
+                                <input type="text" class="form-control trad-form-control" name="name" value="{{ client.name }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="trad-label">Email</label>
+                                <input type="email" class="form-control trad-form-control" name="email" value="{{ client.email }}" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="trad-label">Phone Number</label>
+                                <input type="tel" class="form-control trad-form-control" name="phone" value="{{ client.phone or '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="trad-label">Address</label>
+                                <textarea class="form-control trad-form-control" name="address" rows="2">{{ client.address or '' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="trad-label">Aadhar Number</label>
+                                <input type="text" class="form-control trad-form-control" name="aadhar_number" value="{{ client.aadhar_number or '' }}" placeholder="12-digit Aadhar number">
+                                <small class="form-text text-muted">Enter your 12-digit Aadhar number</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="trad-label">Profile Image</label>
+                                <input type="file" class="form-control trad-form-control" name="profile_image" accept=".png,.jpg,.jpeg,.gif">
+                                <small class="form-text text-muted">Allowed formats: PNG, JPG, JPEG, GIF (Max 5MB)</small>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-trad">
+                                <i class="fas fa-save me-2"></i> Update Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Advocate Profile Section (Client can only see limited info) -->
+    {% if advocate %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="trad-card">
+                <div class="trad-card-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+                    <h4><i class="fas fa-gavel me-2"></i>My Advocate</h4>
+                </div>
+                <div class="trad-card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-user me-2"></i>Name:</strong> {{ advocate.name }}</p>
+                            <p><strong><i class="fas fa-envelope me-2"></i>Email:</strong> {{ advocate.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-phone me-2"></i>Phone:</strong> {{ advocate.phone or 'Not provided' }}</p>
+                            <p><strong><i class="fas fa-map-marker-alt me-2"></i>Address:</strong> {{ advocate.address or 'Not provided' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="trad-stat-box">
+                <div class="number">{{ my_cases|length }}</div>
+                <div class="label">Total Cases</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="trad-stat-box">
+                <div class="number">{{ unread_messages }}</div>
+                <div class="label">Unread Messages</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="trad-stat-box">
+                <div class="number">{{ my_cases|selectattr('case_result', 'equalto', 'won')|list|length }}</div>
+                <div class="label">Cases Won</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="trad-card">
+        <div class="trad-card-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+            <h4><i class="fas fa-briefcase me-2"></i>My Cases</h4>
+        </div>
+        <div class="trad-card-body">
+            {% if my_cases %}
+            <table class="trad-table">
+                <thead>
+                    <tr>
+                        <th>Case No.</th>
+                        <th>Type</th>
+                        <th>Court</th>
+                        <th>Hearing Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for case in my_cases %}
+                    <tr>
+                        <td><strong>{{ case.case_number }}</strong></td>
+                        <td>{{ case.case_type }}</td>
+                        <td>{{ case.court_name }}</td>
+                        <td>{{ case.hearing_date or '-' }}</td>
+                        <td><span class="status-{{ case.status }}">{{ case.status }}</span></td>
+                        <td>
+                            <a href="{{ url_for('client_case_detail', case_id=case.id) }}" class="btn btn-sm btn-trad" style="background:#2c5f2d;">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <p>No cases yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="trad-card">
+        <div class="trad-card-header" style="background:linear-gradient(180deg, #2c5f2d 0%, #3d7a3d 100%);">
+            <h4><i class="fas fa-bell me-2"></i>Notifications</h4>
+        </div>
+        <div class="trad-card-body">
+            {% if notifications %}
+            {% for notif in notifications %}
+            <div class="trad-notification">
+                <strong>{{ notif.title }}</strong>
+                <p style="margin:5px 0;">{{ notif.message }}</p>
+                <small style="color:var(--secondary-brown);">{{ notif.created_at }}</small>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-bell-slash"></i>
+                <p>No notifications</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="trad-footer">
+        <small>&copy; 2024 Legal Case System | All Rights Reserved</small>
+    </div>
+</div>
+{% endblock %}

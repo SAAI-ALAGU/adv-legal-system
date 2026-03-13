@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Clients - Legal Case System{% endblock %}
+
+{% block content %}
+<div class="trad-header">
+    <h1><i class="fas fa-balance-scale"></i> Legal Case System</h1>
+    <div class="subtitle">Advocate Portal | {{ session['user_name'] }}</div>
+</div>
+
+<div class="trad-sidebar">
+    <div class="trad-sidebar-header">
+        <i class="fas fa-gavel"></i>
+        <h4>Advocate Panel</h4>
+    </div>
+    
+    <div class="trad-sidebar-menu">
+        <a href="{{ url_for('advocate_dashboard') }}">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{{ url_for('advocate_cases') }}">
+            <i class="fas fa-briefcase"></i> Cases
+        </a>
+        <a href="{{ url_for('advocate_clients') }}" class="active">
+            <i class="fas fa-users"></i> Clients
+        </a>
+        <a href="{{ url_for('advocate_messages') }}">
+            <i class="fas fa-comments"></i> Messages
+        </a>
+        <a href="{{ url_for('advocate_documents') }}">
+            <i class="fas fa-folder"></i> Documents
+        </a>
+        <a href="{{ url_for('ai_assistant') }}">
+            <i class="fas fa-robot"></i> AI Assistant
+        </a>
+    </div>
+    
+    <div class="trad-sidebar-user">
+        <div class="user-name">
+            <i class="fas fa-user-circle me-2"></i>{{ session['user_name'] }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-trad-outline w-100 mt-2" style="font-size:0.8rem;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="trad-main">
+    <div class="trad-page-header">
+        <h2><i class="fas fa-users me-2"></i>Client Management</h2>
+    </div>
+    
+    <div class="trad-card">
+        <div class="trad-card-header">
+            <h4><i class="fas fa-list me-2"></i>All Clients</h4>
+        </div>
+        <div class="trad-card-body">
+            {% if clients %}
+            <table class="trad-table">
+                <thead>
+                    <tr>
+                        <th>Client ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Cases</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td><strong>{{ client.client_id }}</strong></td>
+                        <td>{{ client.name }}</td>
+                        <td>{{ client.email }}</td>
+                        <td>{{ client.phone }}</td>
+                        <td><span class="status-active">{{ client_cases[client.id] }}</span></td>
+                        <td>
+                            <a href="{{ url_for('advocate_view_client', client_id=client.id) }}" class="btn btn-sm btn-trad">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ url_for('advocate_messages') }}?client_id={{ client.id }}" class="btn btn-sm btn-trad">
+                                <i class="fas fa-comments"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <p>No clients</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="trad-footer">
+        <small>&copy; 2024 Legal Case System | All Rights Reserved</small>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - Legal Case System{% endblock %}
+
+{% block content %}
+<div class="trad-header">
+    <h1><i class="fas fa-balance-scale"></i> Legal Case System</h1>
+    <div class="subtitle">Advocate Portal | {{ session['user_name'] }}</div>
+</div>
+
+<div class="trad-sidebar">
+    <div class="trad-sidebar-header">
+        <i class="fas fa-gavel"></i>
+        <h4>Advocate Panel</h4>
+    </div>
+    
+    <div class="trad-sidebar-menu">
+        <a href="{{ url_for('advocate_dashboard') }}">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{{ url_for('advocate_cases') }}">
+            <i class="fas fa-briefcase"></i> Cases
+        </a>
+        <a href="{{ url_for('advocate_clients') }}">
+            <i class="fas fa-users"></i> Clients
+        </a>
+        <a href="{{ url_for('advocate_messages') }}">
+            <i class="fas fa-comments"></i> Messages
+        </a>
+        <a href="{{ url_for('advocate_documents') }}">
+            <i class="fas fa-folder"></i> Documents
+        </a>
+        <a href="{{ url_for('ai_assistant') }}">
+            <i class="fas fa-robot"></i> AI Assistant
+        </a>
+    </div>
+    
+    <div class="trad-sidebar-user">
+        <div class="user-name">
+            <i class="fas fa-user-circle me-2"></i>{{ session['user_name'] }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-trad-outline w-100 mt-2" style="font-size:0.8rem;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="trad-main">
+    <div class="trad-page-header">
+        <h2><i class="fas fa-bell me-2"></i>Notifications</h2>
+    </div>
+    
+    <div class="trad-card">
+        <div class="trad-card-header">
+            <h4><i class="fas fa-list me-2"></i>All Notifications</h4>
+        </div>
+        <div class="trad-card-body">
+            {% if notifications %}
+            {% for notif in notifications %}
+            <div class="trad-notification">
+                <strong>{{ notif.title }}</strong>
+                <p style="margin:5px 0;">{{ notif.message }}</p>
+                <small style="color:var(--secondary-brown);">{{ notif.created_at }}</small>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-bell-slash"></i>
+                <p>No notifications</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="trad-footer">
+        <small>&copy; 2024 Legal Case System | All Rights Reserved</small>
+    </div>
+</div>
+{% endblock %}

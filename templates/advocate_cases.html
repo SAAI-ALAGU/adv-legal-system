@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Cases - Legal Case System{% endblock %}
+
+{% block content %}
+<div class="trad-header">
+    <h1><i class="fas fa-balance-scale"></i> Legal Case System</h1>
+    <div class="subtitle">Advocate Portal | {{ session['user_name'] }}</div>
+</div>
+
+<div class="trad-sidebar">
+    <div class="trad-sidebar-header">
+        <i class="fas fa-gavel"></i>
+        <h4>Advocate Panel</h4>
+    </div>
+    
+    <div class="trad-sidebar-menu">
+        <a href="{{ url_for('advocate_dashboard') }}">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{{ url_for('advocate_cases') }}" class="active">
+            <i class="fas fa-briefcase"></i> Cases
+        </a>
+        <a href="{{ url_for('advocate_clients') }}">
+            <i class="fas fa-users"></i> Clients
+        </a>
+        <a href="{{ url_for('advocate_messages') }}">
+            <i class="fas fa-comments"></i> Messages
+        </a>
+        <a href="{{ url_for('advocate_documents') }}">
+            <i class="fas fa-folder"></i> Documents
+        </a>
+        <a href="{{ url_for('ai_assistant') }}">
+            <i class="fas fa-robot"></i> AI Assistant
+        </a>
+    </div>
+    
+    <div class="trad-sidebar-user">
+        <div class="user-name">
+            <i class="fas fa-user-circle me-2"></i>{{ session['user_name'] }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-trad-outline w-100 mt-2" style="font-size:0.8rem;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="trad-main">
+    <div class="trad-page-header">
+        <h2><i class="fas fa-briefcase me-2"></i>Case Management</h2>
+    </div>
+    
+    <div class="trad-card">
+        <div class="trad-card-header">
+            <h4><i class="fas fa-list me-2"></i>All Cases</h4>
+            <button class="btn btn-sm btn-trad" data-bs-toggle="modal" data-bs-target="#newCaseModal" style="float:right; margin-top:-5px;">
+                <i class="fas fa-plus"></i> New Case
+            </button>
+        </div>
+        <div class="trad-card-body">
+            {% if cases %}
+            <table class="trad-table">
+                <thead>
+                    <tr>
+                        <th>Case No.</th>
+                        <th>Client</th>
+                        <th>Court</th>
+                        <th>Type</th>
+                        <th>Hiring Date</th>
+                        <th>Hearing Date</th>
+                        <th>Status</th>
+                        <th>Result</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for case in cases %}
+                    <tr>
+                        <td><strong>{{ case.case_number }}</strong></td>
+                        <td>{{ case.client_name }}</td>
+                        <td>{{ case.court_name }}</td>
+                        <td>{{ case.case_type }}</td>
+                        <td>{{ case.hiring_date }}</td>
+                        <td>{{ case.hearing_date or '-' }}</td>
+                        <td><span class="status-{{ case.status }}">{{ case.status }}</span></td>
+                        <td><span class="status-{{ case.case_result }}">{{ case.case_result }}</span></td>
+                        <td>
+                            <a href="{{ url_for('advocate_case_detail', case_id=case.id) }}" class="btn btn-sm btn-trad">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <p>No cases yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="trad-footer">
+        <small>&copy; 2024 Legal Case System | All Rights Reserved</small>
+    </div>
+</div>
+
+<!-- New Case Modal -->
+<div class="modal fade" id="newCaseModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border:2px solid var(--primary-brown);">
+            <div class="modal-header" style="background:var(--primary-brown);">
+                <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>Create New Case</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button>
+            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="trad-label">Select Client</label>
+                        <select class="form-control trad-form-control" name="client_id" required>
+                            <option value="">Choose client...</option>
+                            {% for client in clients %}
+                            <option value="{{ client.id }}">{{ client.name }} ({{ client.client_id }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="trad-label">Court Name</label>
+                        <input type="text" class="form-control trad-form-control" name="court_name" placeholder="e.g., High Court" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="trad-label">Case Type</label>
+                        <select class="form-control trad-form-control" name="case_type" required>
+                            <option value="">Select case type</option>
+                            <option value="Criminal">Criminal</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Corporate">Corporate</option>
+                            <option value="Family">Family</option>
+                            <option value="Property">Property</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="trad-label">Hiring Date</label>
+                                <input type="date" class="form-control trad-form-control" name="hiring_date" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="trad-label">Hearing Date</label>
+                                <input type="date" class="form-control trad-form-control" name="hearing_date">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="trad-label">Case Description</label>
+                        <textarea class="form-control trad-form-control" name="description" rows="2" placeholder="Brief description..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-trad-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-trad">Create Case</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
